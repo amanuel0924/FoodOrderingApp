@@ -1,10 +1,29 @@
 import clasess from "./MealItemForm.module.css"
 import Input from "../../UI/Input"
+import { useRef, useState } from "react"
 
 function MealIremForm(props) {
+  const [formIsValid, setFormIsVlid] = useState(true)
+  const amountRef = useRef()
+  const submitHandler = (e) => {
+    e.preventDefault()
+    const enteredAmaunt = amountRef.current.value
+    const enteredAmauntNumber = +enteredAmaunt
+
+    if (
+      enteredAmaunt.trim() === 0 &&
+      enteredAmauntNumber < 1 &&
+      enteredAmauntNumber > 5
+    ) {
+      setFormIsVlid(false)
+      return
+    }
+    props.onAddToCart(enteredAmauntNumber)
+  }
   return (
-    <form className={clasess.form}>
+    <form className={clasess.form} onSubmit={submitHandler}>
       <Input
+        ref={amountRef}
         lable="amount"
         input={{
           id: "amount",
@@ -16,6 +35,7 @@ function MealIremForm(props) {
         }}
       />
       <button>+ Add</button>
+      {!formIsValid && <p>inter valid amount(1-5)</p>}
     </form>
   )
 }
